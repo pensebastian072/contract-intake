@@ -30,7 +30,10 @@ $nodePath = $nodeCommand.Source
 & $nodePath -e "const [a,b]=process.versions.node.split('.').map(Number);process.exit(a>22||(a===22&&b>=13)?0:1)"
 if ($LASTEXITCODE -ne 0) { throw 'Node.js is too old. Install Node.js 24 LTS from https://nodejs.org.' }
 $lockPath = Join-Path $projectRoot 'package-lock.json'
-$lockHash = (Get-FileHash -LiteralPath $lockPath -Algorithm SHA256).Hash
+$sha256 = [Security.Cryptography.SHA256]::Create()
+$lockStream = [IO.File]::OpenRead($lockPath)
+try { $lockHash = [BitConverter]::ToString($sha256.ComputeHash($lockStream)).Replace('-', '') }
+finally { $lockStream.Dispose(); $sha256.Dispose() }
 $installStamp = Join-Path $runtimeDir 'installed-lock.txt'
 $installedHash = if (Test-Path -LiteralPath $installStamp) { (Get-Content -LiteralPath $installStamp -Raw).Trim() } else { '' }
 if (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'node_modules')) -or $installedHash -ne $lockHash) {

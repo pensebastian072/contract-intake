@@ -6,7 +6,8 @@ $launcherPath = Join-Path $projectRoot 'start-contract-intake.cmd'
 $shell = New-Object -ComObject WScript.Shell
 if (Test-Path -LiteralPath $shortcutPath) {
     $existing = $shell.CreateShortcut($shortcutPath)
-    if ($existing.TargetPath -ne $launcherPath) {
+    $existingLeaf = Split-Path -Leaf $existing.TargetPath
+    if ($existing.TargetPath -ne $launcherPath -and $existingLeaf -ne 'start-contract-intake.cmd') {
         throw 'A Contract Intake shortcut already points somewhere else. Rename that shortcut before installing this copy.'
     }
 }

@@ -2,13 +2,13 @@
 
 [![Download Contract Intake for Windows](https://img.shields.io/badge/Download_for_Windows-Contract_Intake-166534?style=for-the-badge&logo=windows)](https://github.com/pensebastian072/contract-intake/releases/latest/download/Contract-Intake-Windows.zip)
 
-Click the green button above, extract the downloaded ZIP, then double-click `INSTALL-CONTRACT-INTAKE.cmd`. It installs the required Windows component if needed, creates the desktop icon, starts the private local service, and opens the app.
+Click the green button above, open the downloaded ZIP, then double-click `INSTALL-CONTRACT-INTAKE.cmd`. It now works even when opened directly inside the ZIP: it retrieves the complete package, installs it in a permanent local folder, creates the desktop icon, starts the local service, and opens the app.
 
 ## Install on another computer
 
 1. Click **Download for Windows** above.
-2. Extract the entire ZIP into a permanent folder, for example Documents\Contract Intake. Do not run it from inside the ZIP.
-3. Double-click `INSTALL-CONTRACT-INTAKE.cmd` once.
+2. Open the downloaded ZIP.
+3. Double-click `INSTALL-CONTRACT-INTAKE.cmd` once. Extracting first is optional.
 
 On first launch, an internet connection is needed to install Node.js when absent and download application components. Windows may show a normal installer prompt. A setup window shows progress and any errors. Once ready, the app opens at http://127.0.0.1:4317 in your default browser. Later launches use the **Contract Intake** desktop icon and reuse the running service. The service runs in the background until you sign out or restart Windows. Moving the app folder requires recreating the shortcut (remove the old shortcut first).
 

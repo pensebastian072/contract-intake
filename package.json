@@ -1,6 +1,6 @@
 {
   "name": "real-estate-contract-intake",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "description": "Local-only deterministic real-estate contract intake extractor",
