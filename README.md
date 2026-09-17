@@ -1,13 +1,16 @@
 # Contract Intake for Windows
 
+[![Download Contract Intake for Windows](https://img.shields.io/badge/Download_for_Windows-Contract_Intake-166534?style=for-the-badge&logo=windows)](https://github.com/pensebastian072/contract-intake/releases/latest/download/Contract-Intake-Windows.zip)
+
+Click the green button above, extract the downloaded ZIP, then double-click `INSTALL-CONTRACT-INTAKE.cmd`. It installs the required Windows component if needed, creates the desktop icon, starts the private local service, and opens the app.
+
 ## Install on another computer
 
-1. Install Node.js 24 LTS from https://nodejs.org (Windows installer). No administrator rights are needed for this app itself.
+1. Click **Download for Windows** above.
 2. Extract the entire ZIP into a permanent folder, for example Documents\Contract Intake. Do not run it from inside the ZIP.
-3. Double-click `install-desktop-shortcut.cmd` once.
-4. Double-click **Contract Intake** on the desktop.
+3. Double-click `INSTALL-CONTRACT-INTAKE.cmd` once.
 
-On first launch, an internet connection is needed to download application components. A setup window shows progress and any errors. Once ready, the app opens at http://127.0.0.1:4317 in your default browser. Later launches reuse the running service. The service runs in the background until you sign out or restart Windows. Moving the app folder requires recreating the shortcut (remove the old shortcut first).
+On first launch, an internet connection is needed to install Node.js when absent and download application components. Windows may show a normal installer prompt. A setup window shows progress and any errors. Once ready, the app opens at http://127.0.0.1:4317 in your default browser. Later launches use the **Contract Intake** desktop icon and reuse the running service. The service runs in the background until you sign out or restart Windows. Moving the app folder requires recreating the shortcut (remove the old shortcut first).
 
 This is a local browser app with a desktop shortcut, not a standalone EXE. It runs separately on each computer; localhost is never a shareable address. Transaction documents are selected separately on each computer and are not included in this download.
 
