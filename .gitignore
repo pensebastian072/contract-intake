@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+.runtime/
+coverage/
+dist/
+*.pdf
+*.lnk
+.env*
+npm-debug.log*

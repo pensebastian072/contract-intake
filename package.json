@@ -1,0 +1,23 @@
+{
+  "name": "real-estate-contract-intake",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local-only deterministic real-estate contract intake extractor",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/server.js && node --check src/extract.js && node --check public/app.js"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "1.0.9",
+    "@tesseract.js-data/eng": "^1.0.0",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "pdfjs-dist": "^6.3.289",
+    "tesseract.js": "^6.0.1"
+  }
+}

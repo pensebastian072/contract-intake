@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Contract Intake</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div class="brand-mark" aria-hidden="true">CI</div>
+      <div>
+        <h1>Contract Intake</h1>
+        <p>Turn one transaction packet into a copy-ready intake email.</p>
+      </div>
+      <span class="privacy-pill"><span aria-hidden="true">●</span> Local only</span>
+    </header>
+
+    <section class="card" id="input-panel">
+      <form id="extract-form">
+        <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-describedby="upload-help">
+          <input id="file-input" name="documents" type="file" accept="application/pdf,.pdf,text/plain,.txt" multiple hidden>
+          <div class="upload-icon" aria-hidden="true">↑</div>
+          <h2>Upload transaction documents</h2>
+          <p id="upload-help">Drop PDFs here, or <span class="browse-label">choose files</span></p>
+          <small>Up to 35 files · PDFs and text exports · processed on this computer</small>
+        </div>
+        <ul class="file-list" id="file-list" aria-live="polite"></ul>
+
+        <label class="field-label" for="supplemental">Supplemental verified details <span>optional</span></label>
+        <textarea id="supplemental" name="supplemental" rows="5" placeholder="Paste only verified details, for example:&#10;Inspection date: 09/18/2026&#10;Inspection time: 10:00 AM&#10;Lead source: Past client"></textarea>
+        <p class="field-help">These details take precedence over the uploaded documents. Unlabeled text is kept as a note.</p>
+
+        <button class="primary" id="extract-button" type="submit" disabled>Extract email</button>
+      </form>
+    </section>
+
+    <section class="card processing" id="processing-panel" hidden aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <h2>Reading your transaction</h2>
+        <p id="progress-text">Preparing documents...</p>
+      </div>
+      <button class="ghost danger" id="cancel-button" type="button">Cancel</button>
+    </section>
+
+    <section class="card result" id="result-panel" hidden>
+      <div class="result-heading">
+        <div>
+          <span class="eyebrow">Ready</span>
+          <h2>Your intake email</h2>
+          <p id="result-summary"></p>
+        </div>
+        <button class="primary compact" id="copy-button" type="button">Copy email</button>
+      </div>
+      <textarea class="email-output" id="email-output" readonly spellcheck="false" aria-label="Copy-ready email body"></textarea>
+      <details id="verification-panel" hidden>
+        <summary>Needs verification <span id="verification-count"></span></summary>
+        <div id="verification-list"></div>
+      </details>
+      <div class="result-actions">
+        <button class="ghost" id="restart-button" type="button">Start another transaction</button>
+        <span id="copy-status" role="status"></span>
+      </div>
+    </section>
+
+    <p class="error" id="error-message" role="alert" hidden></p>
+    <footer>No email is sent. No web search is performed. Review the copied details before use.</footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+
