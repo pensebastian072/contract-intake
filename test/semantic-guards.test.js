@@ -55,3 +55,27 @@ test('an actual inspection confirmation can establish appointment and inspector'
   assert.equal(schema.inspection_appointment.time.value, '10:00 AM');
   assert.equal(schema.inspection_appointment.inspector_name.value, 'Ada Lewis');
 });
+
+test('money fields read the amount, never a day count, date part, or trailing digit', () => {
+  const read = (line) => resolveSchema([makeDocument('executed purchase contract.pdf',
+    `AS IS Residential Contract for Sale and Purchase\n${line}`)]).schema;
+  assert.equal(read('Purchase Price: 450,000.00').purchase_price.value, '$450,000');
+  assert.equal(read('Purchase Price (U.S. currency) ................ 450,000.00').purchase_price.value, '$450,000');
+  assert.equal(read('Initial Deposit: $10,000.00 due within 3 days after Effective Date').initial_deposit.value, '$10,000');
+  assert.equal(read('Initial deposit to be made within 3 days').initial_deposit.status, 'BLANK');
+  assert.equal(read('Financing: Conventional, loan approval within 30 days').loan_amount.status, 'BLANK');
+  assert.equal(read('Financing: approval by 10/23/2026').loan_amount.status, 'BLANK');
+  assert.equal(read('Loan Amount: 248,900').loan_amount.value, '$248,900');
+  assert.equal(read('Financing: Conventional loan of $360,000').loan_amount.value, '$360,000');
+});
+
+test('a $ amount on the line beats a street number or form year; bare years never count', () => {
+  const read = (line) => resolveSchema([makeDocument('executed purchase contract.pdf',
+    `AS IS Residential Contract for Sale and Purchase\n${line}`)]).schema;
+  assert.equal(read('Purchase Price for 1234 Main St: $450,000').purchase_price.value, '$450,000');
+  assert.equal(read('Purchase Price (2026 form): $450,000').purchase_price.value, '$450,000');
+  assert.equal(read('Purchase Price (2026 form): 450,000').purchase_price.value, '$450,000');
+  assert.equal(read('Purchase Price ...........450,000.00').purchase_price.value, '$450,000');
+  assert.equal(read('Purchase Price: 450000').purchase_price.value, '$450,000');
+  assert.equal(read('Financing: by December 31, 2026').loan_amount.status, 'BLANK');
+});
