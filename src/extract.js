@@ -35,6 +35,28 @@ function addMatch(list, field, document, page, regex, transform = (value) => val
   if (item) list.push(item);
 }
 
+// Money after a label, on the same line, in order of trust:
+//   1. the first $-prefixed amount on the line ("... for 1234 Main St: $450,000" -> $450,000)
+//   2. else the first bare amount with thousands separators ("Price: 450,000.00")
+//   3. else the first bare 4+-digit amount that is not a year ("Price (2026 form): 450000")
+// Day counts ("within 3 days"), percentages and date parts ("10/23/2026") never qualify.
+// The old greedy "[^\n$]{0,120}\$?\s*(\d...)" pattern backtracked to the LAST digit on the
+// line, so "Purchase Price: 450,000.00" read as $0 and "deposit within 3 days" as $3.
+const MONEY_TAIL = String.raw`(\d[\d,]*(?:\.\d{1,2})?)(?![\d,\/-]|\s*(?:days?|%|percent))`;
+
+function moneyPatterns(label) {
+  return [
+    new RegExp(label + String.raw`[^\n$]{0,140}\$\s*` + MONEY_TAIL, 'i'),
+    new RegExp(label + String.raw`[^\n]{0,140}?(?<![\d\/-])(?=\d{1,3}(?:,\d{3})+(?![\d]))` + MONEY_TAIL, 'i'),
+    new RegExp(label + String.raw`[^\n]{0,140}?(?<![\d\/,-])(?!(?:19|20)\d{2}(?![\d,]))(?=\d{4,})` + MONEY_TAIL, 'i'),
+  ];
+}
+
+function addMoneyMatch(list, field, document, page, label) {
+  const regex = moneyPatterns(label).find((pattern) => pattern.test(page.text));
+  if (regex) addMatch(list, field, document, page, regex, cleanMoney);
+}
+
 function addAllMatches(list, field, document, page, regex, transform = (value) => value) {
   for (const match of page.text.matchAll(regex)) {
     if (!match[1]) continue;
@@ -68,9 +90,9 @@ function extractExecutedContract(document, list) {
     addMatch(list, 'client.name', document, page, /(?:Buyer(?:'s)? Name|Buyer):[ \t]*([A-Z][^\n]{2,80})/i, (value) => value.split(/\s{2,}|\bDate:/i)[0]);
     addMatch(list, 'other_side_agent.name', document, page, /(?:Listing Sales Associate|Listing Agent):[ \t]*([^\n]+)/i);
     addMatch(list, 'other_side_agent.brokerage', document, page, /(?:Listing Broker|Listing Office):[ \t]*([^\n]+)/i);
-    addMatch(list, 'purchase_price', document, page, /Purchase Price(?:\s*\(U\.S\. currency\))?[^\n$]{0,120}\$?\s*([\d,]+(?:\.\d{1,2})?)/i, cleanMoney);
-    addMatch(list, 'initial_deposit', document, page, /Initial deposit[^\n$]{0,140}\$?\s*([\d,]+(?:\.\d{1,2})?)/i, cleanMoney);
-    addMatch(list, 'loan_amount', document, page, /(?:Loan Amount|Financing)[^\n$]{0,120}\$?\s*([\d,]+(?:\.\d{1,2})?)/i, cleanMoney);
+    addMoneyMatch(list, 'purchase_price', document, page, String.raw`Purchase Price(?:\s*\(U\.S\. currency\))?`);
+    addMoneyMatch(list, 'initial_deposit', document, page, 'Initial deposit');
+    addMoneyMatch(list, 'loan_amount', document, page, '(?:Loan Amount|Financing)');
     addMatch(list, 'closing_date', document, page, /Closing Date\)?\s*(?::|is|of)?\s*(\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})/i, formatDate);
     addMatch(list, 'executed_date', document, page, /(?:Executed|Effective) Date:[ \t]*(\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})/i, formatDate);
     addMatch(list, 'inspection_period', document, page, /(?:Inspection Period|inspection period)(?:\s*(?:is|of|:))?\s*(\d{1,2})\s*(?:calendar\s*)?days?/i, (value) => `${Number(value)} days`);

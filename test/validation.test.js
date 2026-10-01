@@ -17,3 +17,9 @@ test('amount parsing preserves a deterministic currency representation', () => {
   assert.equal(cleanMoney('249,900.00'), '$249,900');
   assert.equal(cleanMoney('$5,000.50'), '$5,000.50');
 });
+
+test('cleanMoney keeps every digit of a comma-less amount', () => {
+  assert.equal(cleanMoney('450000'), '$450,000');
+  assert.equal(cleanMoney('$450,000.00'), '$450,000');
+  assert.equal(cleanMoney('1,234,567.5'), '$1,234,567.50');
+});

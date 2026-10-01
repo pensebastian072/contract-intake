@@ -47,7 +47,8 @@ export function latestDate(values) {
 }
 
 export function cleanMoney(value) {
-  const match = String(value ?? '').match(/\$?\s*(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)/);
+  // Comma-grouped form needs at least one group; otherwise "450000" matched as "450".
+  const match = String(value ?? '').match(/\$?\s*(\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)/);
   if (!match) return '';
   const amount = Number(match[1].replace(/,/g, ''));
   if (!Number.isFinite(amount)) return '';
